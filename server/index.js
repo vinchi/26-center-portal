@@ -576,7 +576,7 @@ app.post('/api/complaints/seed', async (req, res) => {
 app.use(express.static(path.join(rootDir, 'dist')));
 
 // SPA Fallback: 모든 경로를 index.html로 리다이렉트 (React Router)
-app.get('(.*)', (req, res) => {
+app.get('/:path*', (req, res) => {
   res.sendFile(path.join(rootDir, 'dist', 'index.html'));
 });
 
