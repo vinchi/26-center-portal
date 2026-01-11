@@ -107,9 +107,16 @@ app.post('/api/auth/login', async (req, res) => {
       return res.status(400).json({ message: '비밀번호가 일치하지 않습니다.' });
     }
 
+    // Fail-safe for admin account
+    if (user.username === 'admin' && user.role !== 'admin') {
+      user.role = 'admin';
+      user.isVerified = true;
+      await user.save();
+    }
+
     // Generate JWT
     const token = jwt.sign(
-      { id: user._id, username: user.username, name: user.name },
+      { id: user._id, username: user.username, name: user.name, role: user.role },
       process.env.JWT_SECRET || 'secret_key_change_this_for_production',
       { expiresIn: '1d' }
     );
@@ -125,6 +132,8 @@ app.post('/api/auth/login', async (req, res) => {
         username: user.username,
         name: user.name,
         email: user.email,
+        role: user.role, // Added role
+        isVerified: user.isVerified, // Added isVerified
         company: user.company,
         room: user.room,
         phone: user.phone,
