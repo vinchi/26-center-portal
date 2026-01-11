@@ -8,14 +8,26 @@ import User from './models/User.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-dotenv.config({ path: '.env.local' });
+import fs from 'fs';
+
+if (fs.existsSync('.env.local')) {
+  dotenv.config({ path: '.env.local' });
+} else {
+  dotenv.config();
+}
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = path.join(__dirname, '..');
 
 const app = express();
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT || 3000;
+
+console.log('--- Cloudtype Environment ---');
+console.log('PORT:', PORT);
+console.log('MONGODB_URI:', process.env.MONGODB_URI ? 'Exists' : 'Missing');
+console.log('RootDir:', rootDir);
+console.log('---------------------------');
 
 // Middleware
 app.use(cors());
