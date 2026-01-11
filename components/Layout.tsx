@@ -51,6 +51,14 @@ const Layout: React.FC = () => {
             >
               입주카드
             </Link>
+            {user?.role === 'admin' && (
+              <Link 
+                to="/admin" 
+                className="text-sm font-bold leading-normal transition-colors text-purple-600 hover:text-purple-700 bg-purple-50 px-2 py-1 rounded"
+              >
+                관리자 모드
+              </Link>
+            )}
           </nav>
         </div>
         <div className="flex items-center gap-4">

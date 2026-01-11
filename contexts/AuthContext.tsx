@@ -15,6 +15,7 @@ interface User {
   createdAt?: string;
   lastLogin?: string;
   profileImage?: string;
+  role?: string;
 }
 
 interface AuthContextType {

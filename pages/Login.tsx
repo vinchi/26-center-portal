@@ -29,7 +29,11 @@ const Login: React.FC = () => {
 
       if (response.ok) {
         login(data.token, data.user);
-        navigate('/dashboard');
+        if (data.user.role === 'admin') {
+          navigate('/admin');
+        } else {
+          navigate('/dashboard');
+        }
       } else {
         setError(data.message || '로그인 실패');
       }

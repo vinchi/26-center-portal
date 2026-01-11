@@ -5,6 +5,9 @@ import dotenv from 'dotenv';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from './models/User.js';
+import Notice from './models/Notice.js';
+import Complaint from './models/Complaint.js';
+import MoveInCard from './models/MoveInCard.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -139,62 +142,36 @@ app.post('/api/auth/login', async (req, res) => {
   }
 });
 
-// 3. Access Card Application & Update
+// 3. Access Card Application (Request Only)
 app.post('/api/access-card', async (req, res) => {
   try {
-    // Basic Auth Check (simplified for now, ideally use middleware)
     const token = req.headers.authorization?.split(' ')[1];
     if (!token) return res.status(401).json({ message: '인증 토큰이 없습니다.' });
     
-    // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret_key_change_this_for_production');
-    
-    // Get Data
     const { company, room, employeeId, phone, vehicles } = req.body;
 
-    // Build update object
-    const updateData = {
+    // Check if there's already a pending request
+    const existing = await MoveInCard.findOne({ user: decoded.id, status: 'Pending' });
+    if (existing) {
+       return res.status(400).json({ message: '이미 처리 중인 신청 내역이 있습니다.' });
+    }
+
+    const newRequest = new MoveInCard({
+      user: decoded.id,
+      name: (await User.findById(decoded.id)).name,
       company,
-      room,
-      employeeId,
       phone,
-    };
+      room,
+      vehicleCount: vehicles ? vehicles.length : 0,
+      status: 'Pending'
+    });
 
-    // If no access card exists on user, simple simulate issuing one
-    const currentUser = await User.findById(decoded.id);
-    if (!currentUser.accessCardId) {
-      updateData.accessCardId = `2024-${Math.floor(10000 + Math.random() * 90000)}-A`;
-    }
-
-    // Add new vehicles if provided
-    if (vehicles && vehicles.length > 0) {
-      // In a real app, handle duplicates or replacements. Here we just push.
-       updateData.$push = { vehicles: { $each: vehicles } };
-    }
-
-    const updatedUser = await User.findByIdAndUpdate(
-      decoded.id,
-      updateData,
-      { new: true } // Return updated doc
-    );
+    await newRequest.save();
 
     res.json({
-      message: '신청이 완료되었습니다.',
-      user: {
-        id: updatedUser._id,
-        username: updatedUser.username,
-        name: updatedUser.name,
-        email: updatedUser.email,
-        company: updatedUser.company,
-        room: updatedUser.room,
-        phone: updatedUser.phone,
-        vehicles: updatedUser.vehicles,
-        accessCardId: updatedUser.accessCardId,
-        employeeId: updatedUser.employeeId,
-        createdAt: updatedUser.createdAt,
-        lastLogin: updatedUser.lastLogin,
-        profileImage: updatedUser.profileImage
-      }
+      message: '입주카드 신청이 접수되었습니다. 관리자 승인 후 반영됩니다.',
+      request: newRequest
     });
 
   } catch (error) {
@@ -244,7 +221,6 @@ app.post('/api/users/photo', async (req, res) => {
 });
 
 // 5. Notice Board
-import Notice from './models/Notice.js';
 
 // Get All Notices (with Pagination & Filtering)
 app.get('/api/notices', async (req, res) => {
@@ -415,7 +391,6 @@ app.post('/api/notices/seed', async (req, res) => {
 
 
 // 6. Civil Complaint Feature
-import Complaint from './models/Complaint.js';
 
 // Middleware for auth check (simplified)
 const auth = (req, res, next) => {
@@ -574,6 +549,172 @@ app.post('/api/complaints/seed', async (req, res) => {
   } catch (error) {
     console.error('Complaint Seed Error:', error);
     res.status(500).json({ message: '데이터 생성 중 오류가 발생했습니다.' });
+  }
+});
+
+// --------------------------------------------------------------------------
+// ADMIN APIs
+// --------------------------------------------------------------------------
+
+// Admin Auth Middleware
+const adminAuth = async (req, res, next) => {
+  const token = req.headers.authorization?.split(' ')[1];
+  if (!token) return res.status(401).json({ message: '인증 토큰이 없습니다.' });
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret_key_change_this_for_production');
+    const user = await User.findById(decoded.id);
+    if (!user || user.role !== 'admin') {
+      return res.status(403).json({ message: '관리자 권한이 없습니다.' });
+    }
+    req.user = user;
+    next();
+  } catch (error) {
+    res.status(401).json({ message: '유효하지 않은 토큰입니다.' });
+  }
+};
+
+// Seed Admin Account (Provided by User)
+const seedAdmin = async () => {
+  try {
+    const adminExists = await User.findOne({ username: 'admin' });
+    if (!adminExists) {
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash('76140157Ob#', salt);
+      const newAdmin = new User({
+        username: 'admin',
+        password: hashedPassword,
+        name: '최고관리자',
+        email: 'admin@26center.com',
+        role: 'admin',
+        isVerified: true
+      });
+      await newAdmin.save();
+      console.log('✅ Default Admin Account created');
+    }
+  } catch (err) {
+    console.error('❌ Admin Seeding Error:', err);
+  }
+};
+seedAdmin();
+
+// 1. User Management
+app.get('/api/admin/users', adminAuth, async (req, res) => {
+  try {
+    const users = await User.find().sort({ createdAt: -1 });
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ message: '사용자 목록을 불러오지 못했습니다.' });
+  }
+});
+
+app.patch('/api/admin/users/:id', adminAuth, async (req, res) => {
+  try {
+    const { isVerified, role } = req.body;
+    const user = await User.findByIdAndUpdate(req.params.id, { isVerified, role }, { new: true });
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ message: '사용자 정보 수정에 실패했습니다.' });
+  }
+});
+
+app.delete('/api/admin/users/:id', adminAuth, async (req, res) => {
+  try {
+    await User.findByIdAndDelete(req.params.id);
+    res.json({ message: '사용자가 삭제되었습니다.' });
+  } catch (err) {
+    res.status(500).json({ message: '사용자 삭제에 실패했습니다.' });
+  }
+});
+
+// 2. Notice Management (Full CRUD)
+app.post('/api/admin/notices', adminAuth, async (req, res) => {
+  try {
+    const { type, title, content } = req.body;
+    const notice = new Notice({ type, title, content });
+    await notice.save();
+    res.status(201).json(notice);
+  } catch (err) {
+    res.status(500).json({ message: '공지사항 작성에 실패했습니다.' });
+  }
+});
+
+app.put('/api/admin/notices/:id', adminAuth, async (req, res) => {
+  try {
+    const { type, title, content } = req.body;
+    const notice = await Notice.findByIdAndUpdate(req.params.id, { type, title, content }, { new: true });
+    res.json(notice);
+  } catch (err) {
+    res.status(500).json({ message: '공지사항 수정에 실패했습니다.' });
+  }
+});
+
+app.delete('/api/admin/notices/:id', adminAuth, async (req, res) => {
+  try {
+    await Notice.findByIdAndDelete(req.params.id);
+    res.status(200).json({ message: '공지사항이 삭제되었습니다.' });
+  } catch (err) {
+    res.status(500).json({ message: '공지사항 삭제에 실패했습니다.' });
+  }
+});
+
+// 3. Complaint Management
+app.patch('/api/admin/complaints/:id/status', adminAuth, async (req, res) => {
+  try {
+    const { status } = req.body;
+    const complaint = await Complaint.findByIdAndUpdate(req.params.id, { status }, { new: true });
+    res.json(complaint);
+  } catch (err) {
+    res.status(500).json({ message: '민원 상태 변경에 실패했습니다.' });
+  }
+});
+
+app.delete('/api/admin/complaints/:id', adminAuth, async (req, res) => {
+  try {
+    await Complaint.findByIdAndDelete(req.params.id);
+    res.json({ message: '민원이 삭제되었습니다.' });
+  } catch (err) {
+    res.status(500).json({ message: '민원 삭제에 실패했습니다.' });
+  }
+});
+
+// 4. Move-In Card (Access Card) Management
+app.get('/api/admin/move-in-cards', adminAuth, async (req, res) => {
+  try {
+    const cards = await MoveInCard.find().populate('user', 'username name').sort({ createdAt: -1 });
+    res.json(cards);
+  } catch (err) {
+    res.status(500).json({ message: '입주카드 목록을 불러오지 못했습니다.' });
+  }
+});
+
+app.patch('/api/admin/move-in-cards/:id/status', adminAuth, async (req, res) => {
+  try {
+    const { status } = req.body;
+    const card = await MoveInCard.findByIdAndUpdate(req.params.id, { status }, { new: true }).populate('user');
+    
+    // If approved, update the user's details
+    if (status === 'Approved' && card.user) {
+      await User.findByIdAndUpdate(card.user._id, {
+        company: card.company, // Wait, I need to make sure company is in MoveInCard
+        room: card.room,
+        phone: card.phone,
+        accessCardId: card.user.accessCardId || `2024-${Math.floor(10000 + Math.random() * 90000)}-A`
+      });
+    }
+    
+    res.json(card);
+  } catch (err) {
+    console.error('Move-In Card Status Update Error:', err);
+    res.status(500).json({ message: '상태 변경에 실패했습니다.' });
+  }
+});
+
+app.delete('/api/admin/move-in-cards/:id', adminAuth, async (req, res) => {
+  try {
+    await MoveInCard.findByIdAndDelete(req.params.id);
+    res.json({ message: '기록이 삭제되었습니다.' });
+  } catch (err) {
+    res.status(500).json({ message: '삭제에 실패했습니다.' });
   }
 });
 

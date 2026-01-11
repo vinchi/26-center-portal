@@ -59,6 +59,15 @@ const userSchema = new mongoose.Schema({
   },
   profileImage: {
     type: String // Base64 or URL
+  },
+  role: {
+    type: String,
+    enum: ['user', 'admin'],
+    default: 'user'
+  },
+  isVerified: {
+    type: Boolean,
+    default: false
   }
 });
 

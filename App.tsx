@@ -15,6 +15,13 @@ import PrivacyPolicy from './pages/support/PrivacyPolicy';
 import TermsOfService from './pages/support/TermsOfService';
 import CustomerSupport from './pages/support/CustomerSupport';
 import Layout from './components/Layout';
+import AdminLayout from './components/AdminLayout';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import UserManagement from './pages/admin/UserManagement';
+import NoticeManagement from './pages/admin/NoticeManagement';
+import ComplaintManagement from './pages/admin/ComplaintManagement';
+import MoveInCardManagement from './pages/admin/MoveInCardManagement';
+import { useAuth } from './contexts/AuthContext';
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -27,6 +34,15 @@ const ScrollToTop = () => {
 };
 
 import { AuthProvider } from './contexts/AuthContext';
+
+const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { user, isAuthenticated } = useAuth();
+  
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
+  if (user?.role !== 'admin') return <Navigate to="/dashboard" replace />;
+  
+  return <>{children}</>;
+};
 
 const App: React.FC = () => {
   return (
@@ -57,6 +73,15 @@ const App: React.FC = () => {
             <Route path="/complaints/edit/:id" element={<ComplaintForm />} />
             <Route path="/complaints/:id" element={<ComplaintDetail />} />
             <Route path="/access-card" element={<AccessCard />} />
+            </Route>
+
+            {/* Admin Routes */}
+            <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
+                <Route index element={<AdminDashboard />} />
+                <Route path="users" element={<UserManagement />} />
+                <Route path="notices" element={<NoticeManagement />} />
+                <Route path="complaints" element={<ComplaintManagement />} />
+                <Route path="move-in-cards" element={<MoveInCardManagement />} />
             </Route>
         </Routes>
         </HashRouter>
