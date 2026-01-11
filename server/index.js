@@ -590,6 +590,12 @@ const seedAdmin = async () => {
       });
       await newAdmin.save();
       console.log('✅ Default Admin Account created');
+    } else {
+      // Ensure the existing admin has administrator privileges
+      adminExists.role = 'admin';
+      adminExists.isVerified = true;
+      await adminExists.save();
+      console.log('✅ Admin Account privileges updated');
     }
   } catch (err) {
     console.error('❌ Admin Seeding Error:', err);
