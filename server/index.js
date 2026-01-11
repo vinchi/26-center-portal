@@ -5,8 +5,14 @@ import dotenv from 'dotenv';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from './models/User.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 dotenv.config({ path: '.env.local' });
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const rootDir = path.join(__dirname, '..');
 
 const app = express();
 const PORT = process.env.PORT || 5001;
@@ -545,6 +551,14 @@ app.post('/api/complaints/seed', async (req, res) => {
     console.error('Complaint Seed Error:', error);
     res.status(500).json({ message: '데이터 생성 중 오류가 발생했습니다.' });
   }
+});
+
+// Serve Static Files (Vite build output)
+app.use(express.static(path.join(rootDir, 'dist')));
+
+// SPA Fallback: 모든 경로를 index.html로 리다이렉트 (React Router)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(rootDir, 'dist', 'index.html'));
 });
 
 // Start Server
