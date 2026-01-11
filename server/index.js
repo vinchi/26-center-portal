@@ -37,11 +37,16 @@ app.use(express.json());
 if (!process.env.MONGODB_URI) {
   console.error('❌ CRITICAL: MONGODB_URI is missing in environment variables!');
 } else {
+  // Mask URI for security but show structure for debugging
+  const maskedUri = process.env.MONGODB_URI.replace(/:([^@]+)@/, ':****@');
+  console.log('--- DB Connection Attempt ---');
+  console.log('URI Structure:', maskedUri);
+  console.log('---------------------------');
+
   mongoose.connect(process.env.MONGODB_URI)
     .then(() => console.log('✅ Connected to MongoDB Atlas'))
     .catch(err => {
       console.error('❌ MongoDB Connection Error:', err);
-      // Don't exit process, let server start so logs can be seen
     });
 }
 
