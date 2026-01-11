@@ -21,6 +21,7 @@ import UserManagement from './pages/admin/UserManagement';
 import NoticeManagement from './pages/admin/NoticeManagement';
 import ComplaintManagement from './pages/admin/ComplaintManagement';
 import MoveInCardManagement from './pages/admin/MoveInCardManagement';
+import AdminLogin from './pages/admin/AdminLogin';
 import { useAuth } from './contexts/AuthContext';
 
 const ScrollToTop = () => {
@@ -38,7 +39,7 @@ import { AuthProvider } from './contexts/AuthContext';
 const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, isAuthenticated } = useAuth();
   
-  if (!isAuthenticated) return <Navigate to="/login" replace />;
+  if (!isAuthenticated) return <Navigate to="/admin/login" replace />;
   if (user?.role !== 'admin') return <Navigate to="/dashboard" replace />;
   
   return <>{children}</>;
@@ -54,6 +55,7 @@ const App: React.FC = () => {
             <Route path="/" element={<Navigate to="/login" replace />} />
             
             <Route path="/login" element={<Login />} />
+            <Route path="/admin/login" element={<AdminLogin />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/find-account" element={<FindAccount />} />
             

@@ -122,6 +122,7 @@ const Login: React.FC = () => {
                 계정이 없으신가요?
                 <Link to="/signup" className="text-primary font-bold hover:underline ml-1">회원가입</Link>
             </p>
+            <Link to="/admin/login" className="text-[#616f89] text-xs hover:text-primary mt-2">관리자 로그인</Link>
             <div className="flex gap-4">
               <Link to="/terms" className="text-[#616f89] text-xs hover:text-primary">이용약관</Link>
               <span className="text-[#dbdfe6]">|</span>

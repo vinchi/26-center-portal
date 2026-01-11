@@ -13,7 +13,7 @@ const AdminLayout: React.FC = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate('/admin/login');
   };
 
   // If not admin, redirect or show error (Access control handled in App.tsx/Route protection)
