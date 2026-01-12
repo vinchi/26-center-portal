@@ -15,6 +15,9 @@ const ComplaintManagement: React.FC = () => {
   const [complaints, setComplaints] = useState<ComplaintData[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const [selectedComplaint, setSelectedComplaint] = useState<ComplaintData | null>(null);
+  const [showModal, setShowModal] = useState(false);
+
   const fetchComplaints = async () => {
     try {
       setLoading(true);
@@ -42,11 +45,14 @@ const ComplaintManagement: React.FC = () => {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({ status: newStatus })
       });
       if (res.ok) {
+        if (selectedComplaint && selectedComplaint._id === id) {
+          setSelectedComplaint({...selectedComplaint, status: newStatus as any});
+        }
         fetchComplaints();
       }
     } catch (err) {
@@ -62,11 +68,17 @@ const ComplaintManagement: React.FC = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.ok) {
+        setShowModal(false);
         fetchComplaints();
       }
     } catch (err) {
       alert('삭제에 실패했습니다.');
     }
+  };
+
+  const openDetail = (complaint: ComplaintData) => {
+    setSelectedComplaint(complaint);
+    setShowModal(true);
   };
 
   return (
@@ -111,8 +123,8 @@ const ComplaintManagement: React.FC = () => {
                          <option value="Complete">완료</option>
                        </select>
                     </td>
-                    <td className="px-6 py-4">
-                       <p className="font-bold text-gray-900">{c.title}</p>
+                    <td className="px-6 py-4 cursor-pointer" onClick={() => openDetail(c)}>
+                       <p className="font-bold text-gray-900 group-hover:text-primary transition-colors">{c.title}</p>
                        <p className="text-xs text-gray-400 mt-0.5 line-clamp-1">{c.content}</p>
                     </td>
                     <td className="px-6 py-4 text-gray-700 font-medium">
@@ -124,6 +136,7 @@ const ComplaintManagement: React.FC = () => {
                     <td className="px-6 py-4 text-right">
                        <div className="flex items-center justify-end gap-2 text-gray-400">
                           <button 
+                            onClick={() => openDetail(c)}
                             className="p-2 hover:text-primary hover:bg-gray-100 rounded-lg transition-all"
                             title="상세보기"
                           >
@@ -145,6 +158,77 @@ const ComplaintManagement: React.FC = () => {
           </table>
         </div>
       </div>
+
+      {/* Detail Modal */}
+      {showModal && selectedComplaint && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl w-full max-w-xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+            <header className="px-8 py-6 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
+               <div>
+                  <h2 className="text-xl font-bold text-gray-900">민원 상세 내용</h2>
+                  <p className="text-xs text-gray-500 mt-1">접수번호: {selectedComplaint._id}</p>
+               </div>
+               <button onClick={() => setShowModal(false)} className="size-10 flex items-center justify-center rounded-full hover:bg-gray-200 text-gray-400 transition-colors">
+                 <span className="material-symbols-outlined">close</span>
+               </button>
+            </header>
+            
+            <div className="p-8 space-y-6">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="p-4 bg-gray-50 rounded-2xl">
+                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">작성자</p>
+                  <p className="text-base font-bold text-gray-900">{selectedComplaint.authorName}</p>
+                </div>
+                <div className="p-4 bg-gray-50 rounded-2xl">
+                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">접수 일시</p>
+                  <p className="text-base font-bold text-gray-900">{new Date(selectedComplaint.createdAt).toLocaleString()}</p>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                   <div className={`px-3 py-1 rounded-full text-[10px] font-bold ${
+                      selectedComplaint.status === 'Complete' ? 'bg-green-100 text-green-700' :
+                      selectedComplaint.status === 'Processing' ? 'bg-blue-100 text-blue-700' :
+                      'bg-gray-100 text-gray-600'
+                    }`}>
+                      {selectedComplaint.status === 'Complete' ? '처리완료' : 
+                       selectedComplaint.status === 'Processing' ? '처리중' : '접수대기'}
+                   </div>
+                   <h3 className="text-lg font-bold text-gray-900">{selectedComplaint.title}</h3>
+                </div>
+                
+                <div className="min-h-[150px] p-6 bg-gray-50 rounded-2xl border border-gray-100 text-gray-800 leading-relaxed text-base whitespace-pre-wrap">
+                  {selectedComplaint.content}
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                 <div className="flex gap-2">
+                    <button 
+                      onClick={() => updateStatus(selectedComplaint._id, 'Processing')}
+                      className={`px-4 py-2 rounded-xl font-bold transition-all ${selectedComplaint.status === 'Processing' ? 'bg-blue-600 text-white shadow-lg shadow-blue-200' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}
+                    >
+                      처리중으로 변경
+                    </button>
+                    <button 
+                      onClick={() => updateStatus(selectedComplaint._id, 'Complete')}
+                      className={`px-4 py-2 rounded-xl font-bold transition-all ${selectedComplaint.status === 'Complete' ? 'bg-green-600 text-white shadow-lg shadow-green-200' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}
+                    >
+                      해결 완료
+                    </button>
+                 </div>
+                 <button 
+                   onClick={() => deleteComplaint(selectedComplaint._id)}
+                   className="px-4 py-2 text-red-500 font-bold hover:bg-red-50 rounded-xl transition-all"
+                 >
+                   삭제하기
+                 </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
