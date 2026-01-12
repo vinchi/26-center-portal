@@ -124,7 +124,7 @@ const NoticeManagement: React.FC = () => {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-gray-50/50 border-b border-gray-100">
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase text-center w-16 tracking-widest">분류</th>
+                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase text-center w-24 tracking-widest">분류</th>
                 <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest">제목</th>
                 <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest">작성일</th>
                 <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest text-center">조회수</th>
@@ -140,7 +140,7 @@ const NoticeManagement: React.FC = () => {
                  notices.map((notice) => (
                    <tr key={notice._id} className="hover:bg-gray-50/30 transition-colors group">
                       <td className="px-6 py-4 text-center">
-                        <span className={`px-2 py-1 rounded text-[10px] font-bold ${
+                        <span className={`px-2.5 py-1 rounded-md text-xs font-bold whitespace-nowrap inline-block min-w-[50px] ${
                           notice.type === '점검' ? 'bg-orange-100 text-orange-600' :
                           notice.type === '안전' ? 'bg-red-100 text-red-600' :
                           notice.type === '행사' ? 'bg-purple-100 text-purple-600' :
