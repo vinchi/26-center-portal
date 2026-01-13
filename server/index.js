@@ -568,16 +568,21 @@ app.post('/api/complaints/seed', async (req, res) => {
 // Admin Auth Middleware
 const adminAuth = async (req, res, next) => {
   const token = req.headers.authorization?.split(' ')[1];
-  if (!token) return res.status(401).json({ message: '인증 토큰이 없습니다.' });
+  if (!token) {
+    console.log('AdminAuth: No token provided');
+    return res.status(401).json({ message: '인증 토큰이 없습니다.' });
+  }
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret_key_change_this_for_production');
     const user = await User.findById(decoded.id);
     if (!user || user.role !== 'admin') {
+      console.log('AdminAuth: User not found or not admin', decoded.id);
       return res.status(403).json({ message: '관리자 권한이 없습니다.' });
     }
     req.user = user;
     next();
   } catch (error) {
+    console.error('AdminAuth Error:', error.message);
     res.status(401).json({ message: '유효하지 않은 토큰입니다.' });
   }
 };
