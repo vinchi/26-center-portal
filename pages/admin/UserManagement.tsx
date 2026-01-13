@@ -17,20 +17,33 @@ const UserManagement: React.FC = () => {
   const { token } = useAuth();
   const [users, setUsers] = useState<UserData[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<'all' | 'unverified'>('all');
 
   const fetchUsers = async () => {
     try {
       setLoading(true);
+      setError(null);
       const res = await fetch('/api/admin/users', {
         headers: { Authorization: `Bearer ${token}` }
       });
+      
+      if (!res.ok) {
+        throw new Error(`Error: ${res.status} ${res.statusText}`);
+      }
+      
       const data = await res.json();
+      console.log('Fetched users data:', data);
+      
       if (Array.isArray(data)) {
         setUsers(data);
+      } else {
+        console.error('Unexpected data format for users:', data);
+        setError('데이터 형식이 올바르지 않습니다.');
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('Failed to fetch users:', err);
+      setError(err.message || '사용자 목록을 불러오지 못했습니다.');
     } finally {
       setLoading(false);
     }
@@ -117,6 +130,21 @@ const UserManagement: React.FC = () => {
               {loading ? (
                 <tr>
                   <td colSpan={6} className="px-6 py-20 text-center text-gray-400">Loading users...</td>
+                </tr>
+              ) : error ? (
+                <tr>
+                  <td colSpan={6} className="px-6 py-20 text-center text-red-500 font-medium">
+                    <div className="flex flex-col items-center gap-2">
+                      <span className="material-symbols-outlined text-4xl">error</span>
+                      <p>{error}</p>
+                      <button 
+                        onClick={() => fetchUsers()}
+                        className="mt-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm transition-all"
+                      >
+                        다시 시도
+                      </button>
+                    </div>
+                  </td>
                 </tr>
               ) : filteredUsers.length === 0 ? (
                 <tr>
