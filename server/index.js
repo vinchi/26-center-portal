@@ -504,8 +504,8 @@ app.get('/api/building-status', async (req, res) => {
         percent: Math.round((totalOccupied / maxParking) * 100)
       },
       elevators: [
-        { id: '1-4', name: '엘리베이터 1-4호기', status: 'Normal', note: '정상 운행' },
-        { id: '5', name: '엘리베이터 5호기', status: 'Normal', note: '정상 운행' }
+        { id: '1-4', name: '엘리베이터 1-5호기', status: 'Normal', note: '정상 운행' },
+        { id: '6', name: '엘리베이터 6호기', status: 'Normal', note: '정상 운행' }
       ],
       maintenance: {
         lastCheck: '오늘',
@@ -519,8 +519,8 @@ app.get('/api/building-status', async (req, res) => {
 
     // If there are active complaints about elevators, update the status
     if (elevatorComplaints.length > 0) {
-      status.elevators[1].status = 'Warning';
-      status.elevators[1].note = '점검 및 수리 중';
+      status.elevators[0].status = 'Warning';
+      status.elevators[0].note = '점검 및 수리 중';
     }
 
     res.json(status);
