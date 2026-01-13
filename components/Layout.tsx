@@ -24,7 +24,7 @@ const Layout: React.FC = () => {
             <div className="size-8 bg-primary rounded-lg flex items-center justify-center text-white transition-transform group-hover:scale-105">
               <span className="material-symbols-outlined">domain</span>
             </div>
-            <h2 className="text-[#111318] text-lg font-bold leading-tight">26 센터</h2>
+            <h2 className="text-[#111318] text-lg font-bold leading-tight">26센터</h2>
           </Link>
           <nav className="hidden md:flex items-center gap-9">
             <Link 

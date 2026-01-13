@@ -131,7 +131,7 @@ const Login: React.FC = () => {
           </div>
         </div>
         <div className="mt-12 text-center text-white/40 text-xs">
-            © 2024 26 센터 관리 그룹. All rights reserved.
+            © 2024 26센터 관리 그룹. All rights reserved.
         </div>
       </div>
     </div>

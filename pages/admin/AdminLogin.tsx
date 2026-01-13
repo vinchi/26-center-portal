@@ -53,7 +53,7 @@ const AdminLogin: React.FC = () => {
             <span className="material-symbols-outlined text-primary text-4xl">admin_panel_settings</span>
           </div>
           <h1 className="text-white text-3xl font-bold tracking-tight mb-2">관리자 포털</h1>
-          <p className="text-slate-400 text-sm">26 센터 통합 관리 시스템 로그인</p>
+          <p className="text-slate-400 text-sm">26센터 통합 관리 시스템 로그인</p>
         </div>
         
         <div className="p-8">

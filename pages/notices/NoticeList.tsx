@@ -74,7 +74,7 @@ const NoticeList: React.FC = () => {
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
         <div className="flex flex-col gap-2">
           <h1 className="text-[#111318] text-4xl font-black leading-tight tracking-[-0.033em]">공지사항</h1>
-          <p className="text-gray-500 text-base font-normal">26 센터의 최신 소식과 안내 사항을 확인하세요.</p>
+          <p className="text-gray-500 text-base font-normal">26센터의 최신 소식과 안내 사항을 확인하세요.</p>
         </div>
       </div>
 

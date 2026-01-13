@@ -69,11 +69,11 @@ const Dashboard: React.FC = () => {
             <div className="flex flex-col gap-4 text-left max-w-2xl">
               <span className="bg-primary px-4 py-1.5 rounded-full text-white text-xs font-extrabold uppercase tracking-widest w-fit shadow-lg">빌딩 업데이트</span>
               <h1 className="text-white text-4xl font-black leading-tight tracking-[-0.033em] sm:text-6xl drop-shadow-2xl">
-                  26 센터의<br/>새로운 시작
+                  26센터의<br/>새로운 시작
               </h1>
               <p className="text-gray-100 text-base sm:text-xl font-medium leading-relaxed drop-shadow-lg max-w-lg">
                   모던한 감성과 프리미엄 서비스가 만나는 곳. <br/>
-                  26 센터에서의 특별한 일상을 확인해 보세요.
+                  26센터에서의 특별한 일상을 확인해 보세요.
               </p>
             </div>
             <div className="flex gap-4">
