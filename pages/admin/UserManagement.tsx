@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 
 interface UserData {
@@ -14,13 +15,16 @@ interface UserData {
 }
 
 const UserManagement: React.FC = () => {
-  const { token } = useAuth();
+  const { token, logout } = useAuth();
+  const navigate = useNavigate();
   const [users, setUsers] = useState<UserData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<'all' | 'unverified'>('all');
 
   const fetchUsers = async () => {
+    if (!token) return; 
+
     try {
       setLoading(true);
       setError(null);
@@ -29,6 +33,13 @@ const UserManagement: React.FC = () => {
       const res = await fetch('/api/admin/users', {
         headers: { Authorization: `Bearer ${token}` }
       });
+      
+      if (res.status === 401) {
+        alert('세션이 만료되었습니다. 다시 로그인해주세요.');
+        logout();
+        navigate('/admin/login');
+        return;
+      }
       
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
@@ -55,7 +66,9 @@ const UserManagement: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchUsers();
+    if (token) {
+      fetchUsers();
+    }
   }, [token]);
 
   const toggleVerify = async (id: string, currentStatus: boolean) => {
