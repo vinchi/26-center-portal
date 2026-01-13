@@ -73,7 +73,9 @@ const ComplaintList: React.FC = () => {
       </div>
 
       <div className="bg-white rounded-xl border border-[#dbdfe6] shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
+
+        {/* Desktop Table View */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-gray-50/50 border-b border-[#dbdfe6]">
@@ -91,7 +93,7 @@ const ComplaintList: React.FC = () => {
                   <td className="px-6 py-5 text-sm text-gray-400 font-medium">{complaints.length - idx}</td>
                   <td className="px-6 py-5">{getPriorityBadge(item.priority)}</td>
                   <td className="px-6 py-5">
-                    <Link to={`/complaints/${item._id}`} className="text-gray-900 font-semibold hover:text-primary transition-colors block underline-offset-4 hover:underline">
+                    <Link to={`/complaints/${item._id}`} className="text-gray-900 font-semibold hover:text-primary transition-colors block underline-offset-4 hover:underline truncate max-w-md">
                       {item.title}
                     </Link>
                   </td>
@@ -107,6 +109,45 @@ const ComplaintList: React.FC = () => {
               )}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile Card View */}
+        <div className="md:hidden flex flex-col divide-y divide-[#dbdfe6]">
+           {complaints.map((item) => (
+             <Link 
+              key={item._id} 
+              to={`/complaints/${item._id}`}
+              className="p-5 flex flex-col gap-3 hover:bg-gray-50 active:bg-gray-100 transition-colors"
+             >
+               <div className="flex items-center justify-between">
+                 <div className="flex items-center gap-2">
+                    {getPriorityBadge(item.priority)}
+                    {getStatusBadge(item.status)}
+                 </div>
+                 <span className="text-xs text-gray-400 font-medium">{formatDate(item.createdAt)}</span>
+               </div>
+               
+               <h3 className="text-[#111318] font-bold text-lg leading-snug line-clamp-2">
+                 {item.title}
+               </h3>
+
+               <div className="flex items-center justify-between pt-1">
+                 <div className="flex items-center gap-1.5">
+                   <div className="size-5 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-[10px] font-bold">
+                      {item.authorName.charAt(0)}
+                   </div>
+                   <span className="text-xs text-gray-500">{item.authorName}</span>
+                 </div>
+                  <span className="text-xs text-primary font-semibold flex items-center gap-0.5">
+                    상세보기 
+                    <span className="material-symbols-outlined text-[16px]">chevron_right</span>
+                  </span>
+               </div>
+             </Link>
+           ))}
+           {complaints.length === 0 && (
+              <div className="p-10 text-center text-gray-500">등록된 민원이 없습니다.</div>
+           )}
         </div>
       </div>
     </div>

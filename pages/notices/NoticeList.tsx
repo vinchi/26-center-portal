@@ -113,7 +113,8 @@ const NoticeList: React.FC = () => {
       </div>
 
       <div className="bg-white rounded-xl border border-[#dbdfe6] shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
+        {/* Desktop Table View */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-gray-50/50 border-b border-[#dbdfe6]">
@@ -139,7 +140,7 @@ const NoticeList: React.FC = () => {
                       </span>
                     </td>
                     <td className="px-6 py-5">
-                      <Link to={`/notices/${item._id}`} className="text-gray-900 font-semibold hover:text-primary transition-colors block decoration-primary/30 hover:underline">
+                      <Link to={`/notices/${item._id}`} className="text-gray-900 font-semibold hover:text-primary transition-colors block decoration-primary/30 hover:underline truncate max-w-md">
                         {item.title}
                       </Link>
                     </td>
@@ -158,6 +159,45 @@ const NoticeList: React.FC = () => {
               )}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile Card View */}
+        <div className="md:hidden flex flex-col divide-y divide-[#dbdfe6]">
+          {notices.map((item, idx) => {
+             const color = getTypeColor(item.type);
+             return (
+               <Link 
+                key={item._id} 
+                to={`/notices/${item._id}`}
+                className="p-5 flex flex-col gap-3 hover:bg-gray-50 active:bg-gray-100 transition-colors"
+               >
+                  <div className="flex items-center justify-between">
+                    <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold bg-${color}-100 text-${color}-700`}>
+                        {item.type}
+                    </span>
+                    <span className="text-xs text-gray-400 font-medium">{formatDate(item.createdAt)}</span>
+                  </div>
+                  <h3 className="text-[#111318] font-bold text-lg leading-snug line-clamp-2">
+                    {item.title}
+                  </h3>
+                  <div className="flex items-center justify-between pt-1">
+                    <span className="text-xs text-gray-400 font-medium flex items-center gap-1">
+                      <span className="material-symbols-outlined text-[16px]">visibility</span>
+                      {item.views.toLocaleString()}
+                    </span>
+                    <span className="text-xs text-primary font-semibold flex items-center gap-0.5">
+                      자세히 보기 
+                      <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+                    </span>
+                  </div>
+               </Link>
+             );
+          })}
+          {notices.length === 0 && (
+            <div className="p-10 text-center text-gray-500">
+               해당 데이터가 없습니다.
+            </div>
+          )}
         </div>
         <div className="px-6 py-4 flex items-center justify-between border-t border-[#dbdfe6] bg-gray-50/30">
           <p className="text-sm text-gray-500">
