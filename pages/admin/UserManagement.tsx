@@ -33,7 +33,8 @@ const UserManagement: React.FC = () => {
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
         console.error('Fetch error details:', res.status, errorData);
-        throw new Error(errorData.message || `Error: ${res.status} ${res.statusText}`);
+        const detailedMsg = errorData.debug ? `${errorData.message} (${errorData.debug})` : errorData.message;
+        throw new Error(detailedMsg || `Error: ${res.status} ${res.statusText}`);
       }
       
       const data = await res.json();
