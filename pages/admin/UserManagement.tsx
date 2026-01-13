@@ -108,6 +108,19 @@ const UserManagement: React.FC = () => {
     ? users 
     : users.filter(u => !u.isVerified);
 
+  const openDetail = (user: UserData) => {
+    // Ideally we would fetch full details here if the list doesn't have everything,
+    // but for now we'll use the user object we have.
+    // If vehicles are not part of the list API, we might need a separate fetch.
+    // Assuming 'vehicles' field exists in UserData or fetched user object. 
+    // If not, we'll display what we have.
+    setSelectedUser(user);
+    setShowModal(true);
+  };
+
+  const [selectedUser, setSelectedUser] = useState<UserData | null>(null);
+  const [showModal, setShowModal] = useState(false);
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -172,13 +185,13 @@ const UserManagement: React.FC = () => {
                 filteredUsers.map((user, idx) => (
                   <tr key={user._id} className="hover:bg-gray-50/30 transition-colors">
                     <td className="px-6 py-4 text-gray-400 text-sm text-center font-medium">{users.length - idx}</td>
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-4 cursor-pointer" onClick={() => openDetail(user)}>
                       <div className="flex items-center gap-3">
                          <div className="size-9 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 font-bold">
                            {user.name[0]}
                          </div>
                          <div>
-                           <p className="text-sm font-bold text-gray-900">{user.name}</p>
+                           <p className="text-sm font-bold text-gray-900 group-hover:text-primary transition-colors">{user.name}</p>
                            <p className="text-xs text-gray-500">{user.email}</p>
                          </div>
                       </div>
@@ -204,6 +217,7 @@ const UserManagement: React.FC = () => {
                     <td className="px-6 py-4 text-right">
                        <div className="flex items-center justify-end gap-2">
                           <button 
+                            onClick={() => openDetail(user)}
                             className="p-2 text-gray-400 hover:text-primary hover:bg-gray-100 rounded-lg transition-all"
                             title="상세 정보"
                           >
@@ -225,6 +239,85 @@ const UserManagement: React.FC = () => {
           </table>
         </div>
       </div>
+
+      {/* User Detail Modal */}
+      {showModal && selectedUser && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl w-full max-w-xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+            <header className="px-8 py-6 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
+               <div className="flex items-center gap-4">
+                  <div className="size-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xl">
+                    {selectedUser.name[0]}
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold text-gray-900">{selectedUser.name}</h2>
+                    <p className="text-xs text-gray-500">{selectedUser.email}</p>
+                  </div>
+               </div>
+               <button onClick={() => setShowModal(false)} className="size-10 flex items-center justify-center rounded-full hover:bg-gray-200 text-gray-400 transition-colors">
+                 <span className="material-symbols-outlined">close</span>
+               </button>
+            </header>
+            
+            <div className="p-8 space-y-6">
+              <div className="grid grid-cols-2 gap-4">
+                 <div className="p-4 bg-gray-50 rounded-2xl">
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">아이디</p>
+                    <p className="text-base font-bold text-gray-900">{selectedUser.username}</p>
+                 </div>
+                 <div className="p-4 bg-gray-50 rounded-2xl">
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">권한</p>
+                    <span className={`inline-block px-2 py-0.5 rounded text-xs font-bold uppercase ${selectedUser.role === 'admin' ? 'bg-purple-100 text-purple-600' : 'bg-blue-100 text-blue-600'}`}>
+                      {selectedUser.role}
+                    </span>
+                 </div>
+                 <div className="p-4 bg-gray-50 rounded-2xl">
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">소속 (Company)</p>
+                    <p className="text-base font-bold text-gray-900">{selectedUser.company || '-'}</p>
+                 </div>
+                 <div className="p-4 bg-gray-50 rounded-2xl">
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">호수 (Room)</p>
+                    <p className="text-base font-bold text-gray-900">{selectedUser.room ? `${selectedUser.room}호` : '-'}</p>
+                 </div>
+                 <div className="p-4 bg-gray-50 rounded-2xl">
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">가입일</p>
+                    <p className="text-base font-bold text-gray-900">{new Date(selectedUser.createdAt).toLocaleDateString()}</p>
+                 </div>
+                 <div className="p-4 bg-gray-50 rounded-2xl">
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">계정 상태</p>
+                    <p className={`text-base font-bold ${selectedUser.isVerified ? 'text-green-600' : 'text-red-500'}`}>
+                      {selectedUser.isVerified ? '정상 승인됨' : '미승인 상태'}
+                    </p>
+                 </div>
+              </div>
+
+              <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                 <button 
+                   onClick={() => {
+                     toggleVerify(selectedUser._id, selectedUser.isVerified);
+                     // Optimistic update for modal
+                     setSelectedUser({...selectedUser, isVerified: !selectedUser.isVerified});
+                   }}
+                   className={`px-4 py-2 rounded-xl font-bold transition-all ${
+                     selectedUser.isVerified 
+                       ? 'bg-red-50 text-red-600 hover:bg-red-100' 
+                       : 'bg-green-600 text-white shadow-lg shadow-green-200 hover:bg-green-700'
+                   }`}
+                 >
+                   {selectedUser.isVerified ? '승인 취소 (비활성화)' : '계정 승인 활성화'}
+                 </button>
+
+                 <button 
+                   onClick={() => deleteUser(selectedUser._id)}
+                   className="px-4 py-2 text-gray-400 font-bold hover:text-red-600 hover:bg-red-50 rounded-xl transition-all"
+                 >
+                   계정 영구 삭제
+                 </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
