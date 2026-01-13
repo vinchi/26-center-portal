@@ -583,7 +583,10 @@ const adminAuth = async (req, res, next) => {
     next();
   } catch (error) {
     console.error('AdminAuth Error:', error.message);
-    res.status(401).json({ message: '유효하지 않은 토큰입니다.' });
+    res.status(401).json({ 
+      message: '유효하지 않은 토큰입니다.', 
+      debug: error.message 
+    });
   }
 };
 

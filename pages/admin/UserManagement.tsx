@@ -24,12 +24,16 @@ const UserManagement: React.FC = () => {
     try {
       setLoading(true);
       setError(null);
+      console.log('Current Auth Token:', token ? `${token.substring(0, 10)}...` : 'NONE');
+
       const res = await fetch('/api/admin/users', {
         headers: { Authorization: `Bearer ${token}` }
       });
       
       if (!res.ok) {
-        throw new Error(`Error: ${res.status} ${res.statusText}`);
+        const errorData = await res.json().catch(() => ({}));
+        console.error('Fetch error details:', res.status, errorData);
+        throw new Error(errorData.message || `Error: ${res.status} ${res.statusText}`);
       }
       
       const data = await res.json();
