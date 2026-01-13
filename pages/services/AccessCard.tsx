@@ -105,7 +105,7 @@ const AccessCard: React.FC = () => {
       <div className="bg-white border border-[#f0f2f4] rounded-xl shadow-sm overflow-hidden mb-8">
         <h2 className="text-[#111318] text-[22px] font-bold leading-tight tracking-[-0.015em] px-6 pb-3 pt-8">업체 정보</h2>
         <div className="flex flex-wrap items-end gap-4 px-6 py-4">
-          <label className="flex flex-col min-w-[240px] flex-1">
+          <label className="flex flex-col w-full sm:flex-1 min-w-[200px]">
             <p className="text-[#111318] text-base font-medium leading-normal pb-2">업체명</p>
             <input 
                 className="w-full rounded-lg text-[#111318] border border-[#dbdfe6] h-14 px-4 text-base placeholder:text-[#616f89] focus:ring-primary focus:border-primary" 
@@ -114,7 +114,7 @@ const AccessCard: React.FC = () => {
                 onChange={(e) => setCompany(e.target.value)}
             />
           </label>
-          <label className="flex flex-col min-w-[120px] max-w-[200px] flex-1">
+          <label className="flex flex-col w-full sm:w-auto sm:min-w-[120px] sm:max-w-[200px]">
             <p className="text-[#111318] text-base font-medium leading-normal pb-2">호수</p>
             <input 
                 className="w-full rounded-lg text-[#111318] border border-[#dbdfe6] h-14 px-4 text-base placeholder:text-[#616f89] focus:ring-primary focus:border-primary" 
@@ -139,7 +139,7 @@ const AccessCard: React.FC = () => {
 
         <h2 className="text-[#111318] text-[22px] font-bold leading-tight tracking-[-0.015em] px-6 pb-3 pt-5">임직원 정보</h2>
         <div className="flex flex-wrap items-end gap-4 px-6 py-4">
-          <label className="flex flex-col min-w-[240px] flex-1">
+          <label className="flex flex-col w-full sm:flex-1 min-w-[200px]">
             <p className="text-[#111318] text-base font-medium leading-normal pb-2">사원 번호</p>
             <input 
                 className="w-full rounded-lg text-[#111318] border border-[#dbdfe6] h-14 px-4 text-base placeholder:text-[#616f89] focus:ring-primary focus:border-primary" 
@@ -150,7 +150,7 @@ const AccessCard: React.FC = () => {
           </label>
         </div>
         <div className="flex flex-wrap items-end gap-4 px-6 py-4">
-          <label className="flex flex-col min-w-[240px] flex-1">
+          <label className="flex flex-col w-full sm:flex-1 min-w-[240px]">
             <p className="text-[#111318] text-base font-medium leading-normal pb-2">이메일 주소</p>
             <input 
                 className="w-full rounded-lg text-[#111318] border border-[#dbdfe6] bg-gray-50 h-14 px-4 text-base placeholder:text-[#616f89] focus:ring-primary focus:border-primary" 
@@ -158,7 +158,7 @@ const AccessCard: React.FC = () => {
                 disabled
             />
           </label>
-          <label className="flex flex-col min-w-[240px] flex-1">
+          <label className="flex flex-col w-full sm:flex-1 min-w-[240px]">
             <p className="text-[#111318] text-base font-medium leading-normal pb-2">전화번호</p>
             <input 
                 className="w-full rounded-lg text-[#111318] border border-[#dbdfe6] h-14 px-4 text-base placeholder:text-[#616f89] focus:ring-primary focus:border-primary" 
@@ -178,8 +178,8 @@ const AccessCard: React.FC = () => {
 
         <div className="mx-6 mb-6 p-4 rounded-xl border border-dashed border-[#dbdfe6] bg-background-light">
           <p className="text-sm font-semibold text-[#616f89] mb-3 uppercase tracking-wider">신규 차량 추가</p>
-          <div className="flex flex-wrap items-end gap-4">
-            <label className="flex flex-col min-w-[200px] flex-1">
+          <div className="flex flex-col md:flex-row flex-wrap items-end gap-4">
+            <label className="flex flex-col w-full md:flex-1 min-w-[200px]">
               <p className="text-[#111318] text-sm font-medium leading-normal pb-1">차량번호</p>
               <input 
                 className="w-full rounded-lg text-[#111318] border border-[#dbdfe6] h-11 px-4 text-sm focus:ring-primary focus:border-primary" 
@@ -188,7 +188,7 @@ const AccessCard: React.FC = () => {
                 onChange={(e) => setNewVehicleNumber(e.target.value)}
               />
             </label>
-            <label className="flex flex-col min-w-[200px] flex-1">
+            <label className="flex flex-col w-full md:flex-1 min-w-[200px]">
               <p className="text-[#111318] text-sm font-medium leading-normal pb-1">차량모델</p>
               <input 
                 className="w-full rounded-lg text-[#111318] border border-[#dbdfe6] h-11 px-4 text-sm focus:ring-primary focus:border-primary" 
@@ -199,7 +199,7 @@ const AccessCard: React.FC = () => {
             </label>
             <button 
                 onClick={handleAddVehicle}
-                className="h-11 px-6 bg-primary text-white rounded-lg font-bold text-sm flex items-center gap-2 hover:bg-primary/90 transition-colors"
+                className="w-full md:w-auto h-11 px-6 bg-primary text-white rounded-lg font-bold text-sm flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors"
                 type="button"
             >
               <span className="material-symbols-outlined text-[20px]">add</span>

@@ -70,15 +70,15 @@ const NoticeList: React.FC = () => {
   if (loading && page === 1 && notices.length === 0) return <div className="p-10 text-center">로딩 중...</div>;
 
   return (
-    <div className="max-w-[1200px] mx-auto w-full px-6 py-10">
+    <div className="max-w-[1200px] mx-auto w-full px-4 sm:px-6 py-8 sm:py-10">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
         <div className="flex flex-col gap-2">
-          <h1 className="text-[#111318] text-4xl font-black leading-tight tracking-[-0.033em]">공지사항</h1>
-          <p className="text-gray-500 text-base font-normal">26센터의 최신 소식과 안내 사항을 확인하세요.</p>
+          <h1 className="text-[#111318] text-3xl sm:text-4xl font-black leading-tight tracking-[-0.033em]">공지사항</h1>
+          <p className="text-gray-500 text-sm sm:text-base font-normal">26센터의 최신 소식과 안내 사항을 확인하세요.</p>
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-[#dbdfe6] p-4 mb-6 shadow-sm">
+      <div className="bg-white rounded-xl border border-[#dbdfe6] p-3 sm:p-4 mb-6 shadow-sm">
         <div className="flex flex-col lg:flex-row gap-4 items-center">
           <div className="w-full lg:flex-1">
             <label className="relative flex items-center w-full">
@@ -91,7 +91,7 @@ const NoticeList: React.FC = () => {
               />
             </label>
           </div>
-          <div className="flex items-center gap-2 overflow-x-auto w-full lg:w-auto py-1">
+          <div className="flex items-center gap-2 overflow-x-auto w-full lg:w-auto py-1 no-scrollbar">
             {['전체', '점검', '행사', '일반', '안전'].map((category) => (
               <button 
                 key={category}
@@ -99,7 +99,7 @@ const NoticeList: React.FC = () => {
                   setFilter(category);
                   setPage(1);
                 }}
-                className={`flex h-9 shrink-0 items-center justify-center rounded-lg px-4 cursor-pointer transition-colors text-sm font-semibold
+                className={`flex h-9 shrink-0 items-center justify-center rounded-lg px-4 cursor-pointer transition-colors text-sm font-semibold whitespace-nowrap
                   ${filter === category 
                     ? 'bg-primary text-white' 
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'

@@ -58,7 +58,7 @@ const ComplaintList: React.FC = () => {
   if (loading) return <div className="p-10 text-center text-gray-500">로딩 중...</div>;
 
   return (
-    <div className="max-w-[1200px] mx-auto w-full px-6 py-10">
+    <div className="max-w-[1200px] mx-auto w-full px-4 sm:px-6 py-8 sm:py-10">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
         <div className="flex flex-col gap-2">
           <h1 className="text-[#111318] text-4xl font-black leading-tight tracking-[-0.033em]">민원/수리 신청</h1>

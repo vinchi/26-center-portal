@@ -45,7 +45,7 @@ const Dashboard: React.FC = () => {
     <div className="flex flex-col gap-8 max-w-[1200px] mx-auto w-full px-4 sm:px-10 py-8">
       {/* Banner */}
       <section className="@container mb-2">
-        <div className="relative min-h-[500px] w-full rounded-2xl overflow-hidden shadow-2xl group bg-[#f4f1ea]">
+        <div className="relative min-h-[300px] md:min-h-[500px] w-full rounded-2xl overflow-hidden shadow-2xl group bg-[#f4f1ea]">
           {/* Vivid Background Layer */}
           <div 
             className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 group-hover:scale-105"
@@ -65,22 +65,22 @@ const Dashboard: React.FC = () => {
           <div className="absolute inset-0 z-15 bg-gradient-to-r from-black/40 via-transparent to-black/40"></div>
 
           {/* Bottom Gradient & Content Overlay */}
-          <div className="absolute inset-0 z-20 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end px-8 pb-14 sm:px-16 gap-6">
-            <div className="flex flex-col gap-4 text-left max-w-2xl">
-              <span className="bg-primary px-4 py-1.5 rounded-full text-white text-xs font-extrabold uppercase tracking-widest w-fit shadow-lg">빌딩 업데이트</span>
-              <h1 className="text-white text-4xl font-black leading-tight tracking-[-0.033em] sm:text-6xl drop-shadow-2xl">
+          <div className="absolute inset-0 z-20 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end px-6 pb-10 sm:px-16 sm:pb-14 gap-4 sm:gap-6">
+            <div className="flex flex-col gap-2 sm:gap-4 text-left max-w-2xl">
+              <span className="bg-primary px-3 py-1 sm:px-4 sm:py-1.5 rounded-full text-white text-[10px] sm:text-xs font-extrabold uppercase tracking-widest w-fit shadow-lg">빌딩 업데이트</span>
+              <h1 className="text-white text-3xl sm:text-4xl md:text-6xl font-black leading-tight tracking-[-0.033em] drop-shadow-2xl">
                   26센터의<br/>새로운 시작
               </h1>
-              <p className="text-gray-100 text-base sm:text-xl font-medium leading-relaxed drop-shadow-lg max-w-lg">
-                  모던한 감성과 프리미엄 서비스가 만나는 곳. <br/>
+              <p className="text-gray-100 text-sm sm:text-BASE md:text-xl font-medium leading-relaxed drop-shadow-lg max-w-lg">
+                  모던한 감성과 프리미엄 서비스가 만나는 곳. <br className="hidden sm:block"/>
                   26센터에서의 특별한 일상을 확인해 보세요.
               </p>
             </div>
-            <div className="flex gap-4">
-              <Link to="/notices" className="flex min-w-[140px] cursor-pointer items-center justify-center rounded-xl h-14 px-8 bg-primary text-white text-lg font-bold tracking-[0.015em] hover:bg-blue-700 transition-all shadow-xl active:scale-95">
+            <div className="flex gap-3 sm:gap-4 flex-wrap">
+              <Link to="/notices" className="flex flex-1 sm:flex-none min-w-[120px] sm:min-w-[140px] cursor-pointer items-center justify-center rounded-xl h-12 sm:h-14 px-6 sm:px-8 bg-primary text-white text-base sm:text-lg font-bold tracking-[0.015em] hover:bg-blue-700 transition-all shadow-xl active:scale-95">
                 <span className="truncate">공지사항 보기</span>
               </Link>
-              <Link to="/complaints" className="flex min-w-[140px] cursor-pointer items-center justify-center rounded-xl h-14 px-8 bg-white/10 backdrop-blur-md text-white border border-white/30 text-lg font-bold tracking-[0.015em] hover:bg-white/20 transition-all shadow-xl active:scale-95">
+              <Link to="/complaints" className="flex flex-1 sm:flex-none min-w-[120px] sm:min-w-[140px] cursor-pointer items-center justify-center rounded-xl h-12 sm:h-14 px-6 sm:px-8 bg-white/10 backdrop-blur-md text-white border border-white/30 text-base sm:text-lg font-bold tracking-[0.015em] hover:bg-white/20 transition-all shadow-xl active:scale-95">
                 <span className="truncate">민원 신청</span>
               </Link>
             </div>
