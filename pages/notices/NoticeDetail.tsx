@@ -114,9 +114,20 @@ const NoticeDetail: React.FC = () => {
         </div>
 
         <div className="p-6 sm:p-10 print:px-0">
-          <div className="prose max-w-none text-[#111318] text-base leading-relaxed space-y-6" dangerouslySetInnerHTML={{ __html: notice.content }}>
+          <div 
+            className="prose max-w-none text-[#111318] text-base leading-relaxed space-y-6 quill-content" 
+            dangerouslySetInnerHTML={{ __html: notice.content }}
+          >
             {/* Content rendered dynamically */}
           </div>
+
+          <style>{`
+            .quill-content ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1rem; }
+            .quill-content ol { list-style-type: decimal; padding-left: 1.5rem; margin-bottom: 1rem; }
+            .quill-content h1 { font-size: 2rem; font-weight: 800; margin-bottom: 1rem; }
+            .quill-content h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.75rem; }
+            .quill-content p { margin-bottom: 0.5rem; }
+          `}</style>
 
           <div className="mt-12 print:hidden">
             <h3 className="text-lg font-bold mb-4 flex items-center gap-2">

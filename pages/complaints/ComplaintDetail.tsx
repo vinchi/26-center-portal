@@ -115,10 +115,19 @@ const ComplaintDetail: React.FC = () => {
         </div>
 
         <div className="p-6 sm:p-10 min-h-[300px]">
-          <div className="prose max-w-none text-[#111318] text-base leading-relaxed whitespace-pre-wrap">
-            {complaint.content}
-          </div>
+          <div 
+            className="prose max-w-none text-[#111318] text-base leading-relaxed whitespace-normal quill-content"
+            dangerouslySetInnerHTML={{ __html: complaint.content }}
+          />
         </div>
+
+        <style>{`
+          .quill-content ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1rem; }
+          .quill-content ol { list-style-type: decimal; padding-left: 1.5rem; margin-bottom: 1rem; }
+          .quill-content h1 { font-size: 2rem; font-weight: 800; margin-bottom: 1rem; }
+          .quill-content h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.75rem; }
+          .quill-content p { margin-bottom: 0.5rem; }
+        `}</style>
 
         {complaint.status === 'Complete' && (
           <div className="m-6 sm:m-10 p-6 bg-green-50 rounded-2xl border border-green-100 border-l-4 border-l-green-600">
@@ -135,7 +144,7 @@ const ComplaintDetail: React.FC = () => {
 
        <div className="mt-8">
         <button 
-          onClick={() => navigate('/services/complaints')}
+          onClick={() => navigate('/complaints')}
           className="w-full h-14 rounded-2xl bg-[#111318] text-white text-base font-bold hover:bg-black transition-all shadow-lg active:scale-[0.98]"
         >
           목록으로 돌아가기

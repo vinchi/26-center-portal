@@ -83,7 +83,7 @@ const ComplaintList: React.FC = () => {
                 <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-gray-500 w-32">우선순위</th>
                 <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-gray-500">제목</th>
                 <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-gray-500 w-28">작성자</th>
-                <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-gray-500 w-32">작성일</th>
+                <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-gray-500 w-36 whitespace-nowrap">작성일</th>
                 <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-gray-500 w-32 text-center">처리상태</th>
               </tr>
             </thead>
@@ -98,7 +98,7 @@ const ComplaintList: React.FC = () => {
                     </Link>
                   </td>
                   <td className="px-6 py-5 text-sm text-gray-600">{item.authorName}</td>
-                  <td className="px-6 py-5 text-sm text-gray-600">{formatDate(item.createdAt)}</td>
+                  <td className="px-6 py-5 text-sm text-gray-600 whitespace-nowrap">{formatDate(item.createdAt)}</td>
                   <td className="px-6 py-5 text-center">{getStatusBadge(item.status)}</td>
                 </tr>
               ))}

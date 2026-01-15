@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
+import ReactQuill from 'react-quill-new';
+import 'react-quill-new/dist/quill.snow.css';
 
 interface NoticeData {
   _id: string;
@@ -223,13 +225,25 @@ const NoticeManagement: React.FC = () => {
               </div>
               <div className="space-y-2">
                 <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">내용</label>
-                <textarea 
-                  required
-                  rows={10}
+                <ReactQuill 
+                  theme="snow"
                   value={formData.content}
-                  onChange={(e) => setFormData({...formData, content: e.target.value})}
+                  onChange={(val) => setFormData({...formData, content: val})}
+                  modules={{
+                    toolbar: [
+                      [{ 'header': [1, 2, false] }],
+                      ['bold', 'italic', 'underline', 'strike'],
+                      [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                      ['clean']
+                    ],
+                  }}
+                  formats={[
+                    'header',
+                    'bold', 'italic', 'underline', 'strike',
+                    'list', 'bullet'
+                  ]}
                   placeholder="공지 내용을 입력하세요 (HTML 태그 지원)"
-                  className="w-full bg-gray-50 border-none rounded-xl focus:ring-2 focus:ring-primary/20 text-sm leading-relaxed"
+                  className="bg-gray-50 rounded-xl overflow-hidden min-h-[250px]"
                 />
               </div>
               <footer className="pt-4 flex justify-end gap-3">

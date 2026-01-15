@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import ReactQuill from 'react-quill-new';
+import 'react-quill-new/dist/quill.snow.css';
 
 const ComplaintForm: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -12,6 +14,21 @@ const ComplaintForm: React.FC = () => {
   const [priority, setPriority] = useState<'High' | 'Medium' | 'Low'>('Medium');
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(false);
+
+  const modules = {
+    toolbar: [
+      [{ 'header': [1, 2, false] }],
+      ['bold', 'italic', 'underline', 'strike'],
+      [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+      ['clean']
+    ],
+  };
+
+  const formats = [
+    'header',
+    'bold', 'italic', 'underline', 'strike',
+    'list', 'bullet'
+  ];
 
   const isEdit = !!id;
 
@@ -125,14 +142,17 @@ const ComplaintForm: React.FC = () => {
 
           <div className="space-y-2">
             <label htmlFor="content" className="text-sm font-bold text-[#111318]">문의 내용</label>
-            <textarea
-              id="content"
-              rows={10}
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              className="w-full bg-gray-50 border-none rounded-xl p-4 text-[#111318] placeholder:text-gray-400 focus:ring-2 focus:ring-primary/20 transition-all resize-none"
-              placeholder="자세한 내용을 입력해 주세요. (위치, 증상 등)"
-            />
+            <div className="quill-editor-container">
+              <ReactQuill
+                theme="snow"
+                value={content}
+                onChange={setContent}
+                modules={modules}
+                formats={formats}
+                className="bg-gray-50 rounded-xl overflow-hidden min-h-[300px]"
+                placeholder="자세한 내용을 입력해 주세요. (위치, 증상 등)"
+              />
+            </div>
           </div>
 
           <div className="flex gap-4 pt-4">

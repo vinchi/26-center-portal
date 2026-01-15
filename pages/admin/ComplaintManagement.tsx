@@ -15,6 +15,10 @@ const ComplaintManagement: React.FC = () => {
   const [complaints, setComplaints] = useState<ComplaintData[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const stripHtmlTags = (html: string) => {
+    return html.replace(/<[^>]*>?/gm, '').replace(/&nbsp;/g, ' ');
+  };
+
   const [selectedComplaint, setSelectedComplaint] = useState<ComplaintData | null>(null);
   const [showModal, setShowModal] = useState(false);
 
@@ -125,7 +129,7 @@ const ComplaintManagement: React.FC = () => {
                     </td>
                     <td className="px-6 py-4 cursor-pointer" onClick={() => openDetail(c)}>
                        <p className="font-bold text-gray-900 group-hover:text-primary transition-colors">{c.title}</p>
-                       <p className="text-xs text-gray-400 mt-0.5 line-clamp-1">{c.content}</p>
+                       <p className="text-xs text-gray-400 mt-0.5 line-clamp-1">{stripHtmlTags(c.content)}</p>
                     </td>
                     <td className="px-6 py-4 text-gray-700 font-medium">
                        {c.authorName}
@@ -198,9 +202,17 @@ const ComplaintManagement: React.FC = () => {
                    <h3 className="text-lg font-bold text-gray-900">{selectedComplaint.title}</h3>
                 </div>
                 
-                <div className="min-h-[150px] p-6 bg-gray-50 rounded-2xl border border-gray-100 text-gray-800 leading-relaxed text-base whitespace-pre-wrap">
-                  {selectedComplaint.content}
+                <div className="min-h-[150px] p-6 bg-gray-50 rounded-2xl border border-gray-100 text-gray-800 leading-relaxed text-base quill-content">
+                  <div dangerouslySetInnerHTML={{ __html: selectedComplaint.content }} />
                 </div>
+
+                <style>{`
+                  .quill-content ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1rem; }
+                  .quill-content ol { list-style-type: decimal; padding-left: 1.5rem; margin-bottom: 1rem; }
+                  .quill-content h1 { font-size: 1.5rem; font-weight: 800; margin-bottom: 0.5rem; }
+                  .quill-content h2 { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; }
+                  .quill-content p { margin-bottom: 0.25rem; }
+                `}</style>
               </div>
 
               <div className="flex items-center justify-between pt-4 border-t border-gray-100">
