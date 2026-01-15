@@ -117,37 +117,62 @@ const Dashboard: React.FC = () => {
             <Link to="/notices" className="text-primary text-sm font-semibold hover:underline">전체 보기</Link>
           </div>
           <div className="overflow-hidden rounded-xl border border-[#dbdfe6] bg-white">
-            <table className="w-full text-left">
-              <thead>
-                <tr className="bg-gray-50 border-b border-gray-100">
-                  <th className="px-6 py-4 text-[#111318] text-sm font-semibold">제목</th>
-                  <th className="px-6 py-4 text-[#111318] text-sm font-semibold">카테고리</th>
-                  <th className="px-6 py-4 text-[#111318] text-sm font-semibold">날짜</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {notices.map((row, idx) => (
-                  <tr key={idx} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-6 py-5 text-[#111318] text-sm font-medium">
-                      <Link to={`/notices/${row._id}`} className="hover:text-primary transition-colors">
-                        {row.title}
-                      </Link>
-                    </td>
-                    <td className="px-6 py-5">
-                      <span className={`inline-flex items-center rounded-lg px-2.5 py-1 text-xs font-semibold bg-${getNoticeColor(row.type)}-100 text-${getNoticeColor(row.type)}-700`}>
-                        {row.type}
-                      </span>
-                    </td>
-                    <td className="px-6 py-5 text-[#616f89] text-sm">{formatDate(row.createdAt)}</td>
+            {/* Desktop Table View */}
+            <div className="hidden sm:block">
+              <table className="w-full text-left">
+                <thead>
+                  <tr className="bg-gray-50 border-b border-gray-100">
+                    <th className="px-6 py-4 text-[#111318] text-sm font-semibold">제목</th>
+                    <th className="px-6 py-4 text-[#111318] text-sm font-semibold text-center h-full">카테고리</th>
+                    <th className="px-6 py-4 text-[#111318] text-sm font-semibold">날짜</th>
                   </tr>
-                ))}
-                {notices.length === 0 && (
-                  <tr>
-                    <td colSpan={3} className="px-6 py-10 text-center text-gray-500 text-sm">최근 공지사항이 없습니다.</td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {notices.map((row, idx) => (
+                    <tr key={idx} className="hover:bg-gray-50 transition-colors">
+                      <td className="px-6 py-5 text-[#111318] text-sm font-medium">
+                        <Link to={`/notices/${row._id}`} className="hover:text-primary transition-colors line-clamp-1">
+                          {row.title}
+                        </Link>
+                      </td>
+                      <td className="px-6 py-5">
+                        <div className="flex justify-center">
+                          <span className={`inline-flex items-center rounded-lg px-2.5 py-1 text-xs font-semibold bg-${getNoticeColor(row.type)}-100 text-${getNoticeColor(row.type)}-700`}>
+                            {row.type}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-5 text-[#616f89] text-sm whitespace-nowrap">{formatDate(row.createdAt)}</td>
+                    </tr>
+                  ))}
+                  {notices.length === 0 && (
+                    <tr>
+                      <td colSpan={3} className="px-6 py-10 text-center text-gray-500 text-sm">최근 공지사항이 없습니다.</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile List View */}
+            <div className="block sm:hidden divide-y divide-gray-100">
+              {notices.map((row, idx) => (
+                <Link to={`/notices/${row._id}`} key={idx} className="flex flex-col p-5 hover:bg-gray-50 transition-colors gap-2">
+                  <div className="flex items-center justify-between gap-3">
+                    <span className={`inline-flex items-center rounded-lg px-2 py-0.5 text-[10px] font-bold bg-${getNoticeColor(row.type)}-100 text-${getNoticeColor(row.type)}-700`}>
+                      {row.type}
+                    </span>
+                    <span className="text-[#616f89] text-[11px] whitespace-nowrap">{formatDate(row.createdAt)}</span>
+                  </div>
+                  <h3 className="text-[#111318] text-base font-bold line-clamp-2 leading-snug">
+                    {row.title}
+                  </h3>
+                </Link>
+              ))}
+              {notices.length === 0 && (
+                <div className="px-6 py-10 text-center text-gray-500 text-sm">최근 공지사항이 없습니다.</div>
+              )}
+            </div>
           </div>
           
           {/* Complaint Status Stats */}

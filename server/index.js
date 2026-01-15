@@ -504,7 +504,7 @@ app.get('/api/building-status', async (req, res) => {
         percent: Math.round((totalOccupied / maxParking) * 100)
       },
       elevators: [
-        { id: '1-5', name: '엘리베이터 1-5호기', status: 'Normal', note: '정상 운행' },
+        { id: '1-5', name: '엘리베이터 1-5호기', status: 'Warning', note: '점검 및 수리 중' },
         { id: '6', name: '엘리베이터 6호기', status: 'Normal', note: '정상 운행' }
       ],
       maintenance: {
