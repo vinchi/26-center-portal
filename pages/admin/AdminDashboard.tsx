@@ -31,9 +31,9 @@ const AdminDashboard: React.FC = () => {
         // In a real app, you might have a single /api/admin/stats endpoint
         // For now, we'll fetch basic data if available or simulate
         const [usersRes, complaintsRes, cardsRes] = await Promise.all([
-          fetch('/api/admin/users', { headers: { Authorization: `Bearer ${token}` } }),
-          fetch('/api/admin/move-in-cards', { headers: { Authorization: `Bearer ${token}` } }),
-          fetch('/api/complaints', { headers: { Authorization: `Bearer ${token}` } })
+          fetch(`/api/admin/users?t=${Date.now()}`, { headers: { Authorization: `Bearer ${token}` } }),
+          fetch(`/api/admin/move-in-cards?t=${Date.now()}`, { headers: { Authorization: `Bearer ${token}` } }),
+          fetch(`/api/complaints?t=${Date.now()}`, { headers: { Authorization: `Bearer ${token}` } })
         ]);
 
         const users = await usersRes.json();
