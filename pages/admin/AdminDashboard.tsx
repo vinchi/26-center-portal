@@ -45,7 +45,7 @@ const AdminDashboard: React.FC = () => {
           pendingUsers: Array.isArray(users) ? users.filter((u: any) => !u.isVerified).length : 0,
           notices: 0, // Need to fetch separately if needed
           complaints: Array.isArray(complaints) ? complaints.length : 0,
-          pendingComplaints: Array.isArray(complaints) ? complaints.filter((c: any) => c.status === 'Pending').length : 0,
+          pendingComplaints: Array.isArray(complaints) ? complaints.filter((c: any) => c.status === 'Pending' || c.status === 'Processing').length : 0,
           moveInCards: Array.isArray(cards) ? cards.length : 0,
           pendingCards: Array.isArray(cards) ? cards.filter((c: any) => c.status === 'Pending').length : 0
         });
@@ -61,7 +61,7 @@ const AdminDashboard: React.FC = () => {
 
   const statCards = [
     { title: '전체 사용자', value: stats.users, icon: 'group', color: 'blue', sub: `${stats.pendingUsers}명 미승인` },
-    { title: '민원 현황', value: stats.complaints, icon: 'feedback', color: 'orange', sub: `${stats.pendingComplaints}건 대기중` },
+    { title: '민원 현황', value: stats.complaints, icon: 'feedback', color: 'orange', sub: `${stats.pendingComplaints}건 미완료` },
     { title: '입주카드 신청', value: stats.moveInCards, icon: 'badge', color: 'green', sub: `${stats.pendingCards}건 미처리` },
     { title: '등록 공지사항', value: '-', icon: 'campaign', color: 'purple', sub: '최신순 정렬' },
   ];
